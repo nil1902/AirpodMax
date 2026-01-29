@@ -7,9 +7,18 @@ interface LoadingScreenProps {
   onLoadComplete: () => void;
 }
 
+const loadingMessages = [
+  "INITIALIZING AUDIO ENGINE...",
+  "LOADING SPATIAL AUDIO...",
+  "PREPARING EXPERIENCE...",
+  "CALIBRATING SOUND...",
+  "ALMOST READY...",
+];
+
 export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
     // Simulate loading progress
@@ -32,6 +41,15 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
     return () => clearInterval(interval);
   }, [onLoadComplete]);
 
+  // Update loading message based on progress
+  useEffect(() => {
+    if (progress < 20) setMessageIndex(0);
+    else if (progress < 40) setMessageIndex(1);
+    else if (progress < 60) setMessageIndex(2);
+    else if (progress < 80) setMessageIndex(3);
+    else setMessageIndex(4);
+  }, [progress]);
+
   return (
     <AnimatePresence>
       {!isComplete && (
@@ -39,18 +57,18 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center"
+          className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center px-4"
         >
           {/* Apple Logo */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-8"
           >
             <svg
-              width="80"
-              height="80"
+              width="60"
+              height="60"
               viewBox="0 0 170 170"
               className="text-white"
             >
@@ -61,40 +79,62 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
             </svg>
           </motion.div>
 
+          {/* AirPods Max Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-[family-name:var(--font-orbitron)] font-bold text-white mb-4 tracking-wider text-center"
+          >
+            AirPods Max
+          </motion.h1>
+
+          {/* Loading Experience Text */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-green-400 text-sm md:text-base tracking-[0.3em] uppercase font-mono mb-12"
+          >
+            Loading Experience
+          </motion.p>
+
           {/* Loading Bar Container */}
-          <div className="w-64 md:w-80 relative">
+          <div className="w-full max-w-xl md:max-w-2xl relative mb-6">
             {/* Background Bar */}
-            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-              {/* Progress Bar */}
+            <div className="h-1.5 bg-white/10 overflow-hidden">
+              {/* Gradient Progress Bar */}
               <motion.div
-                className="h-full bg-gradient-to-r from-white via-gray-300 to-white rounded-full"
+                className="h-full bg-gradient-to-r from-yellow-400 via-green-400 to-green-500"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
               />
             </div>
-
-            {/* Percentage Text */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="mt-6 text-center"
-            >
-              <span className="text-white/60 text-sm font-mono tracking-wider">
-                {Math.round(progress)}%
-              </span>
-            </motion.div>
           </div>
 
-          {/* Loading Text */}
-          <motion.p
+          {/* Percentage Text */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-8 text-white/40 text-xs tracking-[0.3em] uppercase font-mono"
+            className="mb-8"
           >
-            Loading Experience
+            <span className="text-white/60 text-2xl md:text-3xl font-mono tracking-wider">
+              {Math.round(progress)}%
+            </span>
+          </motion.div>
+
+          {/* Dynamic Loading Message */}
+          <motion.p
+            key={messageIndex}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+            className="text-white/40 text-xs md:text-sm tracking-[0.2em] uppercase font-mono text-center"
+          >
+            {loadingMessages[messageIndex]}
           </motion.p>
         </motion.div>
       )}
