@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050505;
+  --color-foreground: #ededed;
+  
+  /* Apple Branding Colors */
+  --color-apple-black: #000000; /* Apple Pure Black */
+  --color-apple-dark: #121212;  /* Apple Dark Gray */
+  --color-apple-blue: #2997ff;  /* Apple System Blue */
+  --color-apple-cyan: #0077ED;  /* Apple Darker Blue Accent */
+  --color-apple-gray: #86868b; /* Apple Text Gray */
+
+  --font-sans: var(--font-inter);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-radial-gradient {
+    background-image: radial-gradient(var(--tw-gradient-stops));
+  }
+}
+
+/* Custom scrollbar for Webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
